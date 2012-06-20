@@ -14,7 +14,20 @@ _gitname="homeshick"
 build() {
   cd "$srcdir"
   msg "Connecting to GIT server...."
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
+
+  msg "GIT checkout done or server timeout"
 }
 
 package() {
+  # copy the 'binary' *ahem* script
+  install -D "$srcdir"/$_gitname/homeshick "$pkgdir"/usr/bin/homeshick
+  # copy the licenses
+  mkdir -p "$pkgdir"/usr/share/licenses/$pkgname/
+  install -m=644 -t "$pkgdir"/usr/share/licenses/$pkgname/ "$srcdir"/$_gitname/LICENSE*
 }
